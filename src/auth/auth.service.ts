@@ -23,9 +23,9 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload, { expiresIn: '20s' }),
+      access_token: this.jwtService.sign(payload, { expiresIn: '1d' }),
       refresh_token: this.jwtService.sign(refreshTokenPayload, {
-        expiresIn: '1d',
+        expiresIn: '7d',
       }),
     };
   }
@@ -40,7 +40,7 @@ export class AuthService {
       userEmail: user.email,
     };
 
-    return this.jwtService.sign(payload, { expiresIn: '20s' });
+    return this.jwtService.sign(payload, { expiresIn: '1d' });
   }
 
   async validateUser(userLoginDto: UserLoginDto): Promise<User> {
