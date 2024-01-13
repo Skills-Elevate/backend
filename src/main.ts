@@ -10,7 +10,7 @@ async function bootstrap() {
     preflightContinue: false,
     optionsSuccessStatus: 204,
   });
-  app.setGlobalPrefix('api/v1');
+  // app.setGlobalPrefix('api/v1');
   await app.listen(3000);
 }
 bootstrap();
