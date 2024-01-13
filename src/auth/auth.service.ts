@@ -23,24 +23,27 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload, { expiresIn: '1d' }),
+      access_token: this.jwtService.sign(payload, { expiresIn: '10s' }),
       refresh_token: this.jwtService.sign(refreshTokenPayload, {
-        expiresIn: '7d',
+        expiresIn: '15s',
       }),
     };
   }
 
   async refreshAccessToken(refreshToken: string) {
-    const decodedRefreshToken = this.jwtService.verify(refreshToken);
-    const user = await this.usersService.findUserByEmail(
-      decodedRefreshToken.userEmail,
-    );
+    try {
+      const decodedRefreshToken = this.jwtService.verify(refreshToken);
+      const user = await this.usersService.findUserByEmail(decodedRefreshToken.userEmail);
 
-    const payload = {
-      userEmail: user.email,
-    };
+      const payload = {
+        userEmail: user.email,
+      };
 
-    return this.jwtService.sign(payload, { expiresIn: '1d' });
+      return this.jwtService.sign(payload, { expiresIn: '10s' });
+    } catch (error) {
+      console.error('JWT Verification Error during refreshAccessToken:', error);
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 
   async validateUser(userLoginDto: UserLoginDto): Promise<User> {
