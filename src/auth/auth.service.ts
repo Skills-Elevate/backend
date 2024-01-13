@@ -23,9 +23,9 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload, { expiresIn: '10s' }),
+      access_token: this.jwtService.sign(payload, { expiresIn: '1d' }),
       refresh_token: this.jwtService.sign(refreshTokenPayload, {
-        expiresIn: '15s',
+        expiresIn: '7d',
       }),
     };
   }
@@ -39,7 +39,7 @@ export class AuthService {
         userEmail: user.email,
       };
 
-      return this.jwtService.sign(payload, { expiresIn: '10s' });
+      return this.jwtService.sign(payload, { expiresIn: '1d' });
     } catch (error) {
       console.error('JWT Verification Error during refreshAccessToken:', error);
       throw new UnauthorizedException('Invalid refresh token');
