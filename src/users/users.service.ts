@@ -9,8 +9,12 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const hashedPassword = await this.hashPassword(createUserDto.password);
     return this.prisma.user.create({
-      data: createUserDto,
+      data: {
+        ...createUserDto,
+        password: hashedPassword,
+      },
     });
   }
 
@@ -22,6 +26,10 @@ export class UsersService {
 
   async findAllUsers() {
     return this.prisma.user.findMany();
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 8);
   }
 
   async validatePassword(password: string, userPassword: string): Promise<boolean> {
