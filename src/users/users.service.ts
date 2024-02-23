@@ -8,7 +8,7 @@ import * as bcrypt from 'bcryptjs';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const hashedPassword = await this.hashPassword(createUserDto.password);
     return this.prisma.user.create({
       data: {
@@ -18,11 +18,11 @@ export class UsersService {
     });
   }
 
-  async findAllUsers() {
+  async findAll() {
     return this.prisma.user.findMany();
   }
 
-  async findUserByEmail(email: string) {
+  async findOne(email: string) {
     return this.prisma.user.findUnique({
       where: { email },
     });

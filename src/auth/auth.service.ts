@@ -33,7 +33,7 @@ export class AuthService {
   async refreshAccessToken(refreshToken: string) {
     try {
       const decodedRefreshToken = this.jwtService.verify(refreshToken);
-      const user = await this.usersService.findUserByEmail(decodedRefreshToken.userEmail);
+      const user = await this.usersService.findOne(decodedRefreshToken.userEmail);
 
       const payload = {
         userEmail: user.email,
@@ -49,7 +49,7 @@ export class AuthService {
   async validateUser(userLoginDto: UserLoginDto): Promise<User> {
     const { email, password } = userLoginDto;
 
-    const user = await this.usersService.findUserByEmail(email);
+    const user = await this.usersService.findOne(email);
     if (!(await this.usersService.validatePassword(password, user.password))) {
       throw new UnauthorizedException();
     }

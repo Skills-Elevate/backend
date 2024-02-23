@@ -8,13 +8,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createUser(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAllUsers() {
-    return this.usersService.findAllUsers();
+  async findAll() {
+    return this.usersService.findAll();
   }
 }
