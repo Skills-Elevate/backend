@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 import { UserLoginDto } from './models/dto/user-login.dto';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -12,8 +12,7 @@ export class AuthService {
   ) {}
 
   async login(authLoginDto: UserLoginDto) {
-    const { email, password } = authLoginDto;
-    const user = await this.validateUser(email, password);
+    const user = await this.validateUser(authLoginDto);
 
     const payload = {
       userEmail: user.email,
@@ -47,12 +46,13 @@ export class AuthService {
     }
   }
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(userLoginDto: UserLoginDto): Promise<User> {
+    const { email, password } = userLoginDto;
+
     const user = await this.usersService.findUserByEmail(email);
-    if (user && await bcrypt.compare(pass, user.password)) {
-      const { password, ...result } = user;
-      return result;
+    if (!(await this.usersService.validatePassword(password, user.password))) {
+      throw new UnauthorizedException();
     }
-    return null;
+    return user;
   }
 }
