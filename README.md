@@ -64,3 +64,8 @@ $ npm run test:cov
 DATABASE_URL=
 JWT_SECRET=
 ```
+## Commande Prisma
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
