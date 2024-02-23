@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { UserLoginDto } from './models/dto/user-login.dto';
+import { UserLoginDto } from './dto/user-login.dto';
 
 @Injectable()
 export class AuthService {

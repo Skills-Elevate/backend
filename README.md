@@ -61,12 +61,6 @@ $ npm run test:cov
 ## .env
 
 ```bash
-DB_TYPE=
-DB_HOST=
-DB_PORT=
-DB_USERNAME=
-DB_PASSWORD=
-DB_NAME=
-
+DATABASE_URL=
 JWT_SECRET=
 ```
