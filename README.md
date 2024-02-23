@@ -65,8 +65,8 @@ nest g resource name
 
 ## Prisma
 ```bash
-npx prisma migrate dev --name init
 npx prisma generate
+npx prisma migrate dev --name init
 ```
 
 ## .env
