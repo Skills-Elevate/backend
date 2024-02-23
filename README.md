@@ -58,14 +58,20 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## .env
+## nest
+```bash
+nest g resource name
+```
 
+## Prisma
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
+## .env
 ```bash
 DATABASE_URL=
 JWT_SECRET=
 ```
-## Commande Prisma
-```bash
-npx prisma migrate dev --name init
-npx prisma generate
-```
+

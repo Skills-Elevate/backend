@@ -18,14 +18,14 @@ export class UsersService {
     });
   }
 
+  async findAllUsers() {
+    return this.prisma.user.findMany();
+  }
+
   async findUserByEmail(email: string) {
     return this.prisma.user.findUnique({
       where: { email },
     });
-  }
-
-  async findAllUsers() {
-    return this.prisma.user.findMany();
   }
 
   async hashPassword(password: string): Promise<string> {
