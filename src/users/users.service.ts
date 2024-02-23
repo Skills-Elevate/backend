@@ -13,7 +13,7 @@ export class UsersService {
     });
 
     const { password, ...result } = user;
-    return result as Omit<User, 'password'>; // Cast explicitement le résultat
+    return result as Omit<User, 'password'>;
   }
 
   async findUserByEmail(email: string) {
