@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "e5006df4-0ccb-4735-8618-48388ea2f7ea",
-		"name": "Nestjs_auth_test",
+		"name": "Skill_Elevate",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21842883"
 	},
@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"gabet.thibaut@gmail.com\",\r\n    \"password\": \"test\"\r\n}",
+							"raw": "{\r\n    \"email\": \"test2@test2.com\",\r\n    \"password\": \"test\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -24,15 +24,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/auth",
+							"raw": "http://localhost:3000/auth",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"api",
-								"v1",
 								"auth"
 							]
 						}
@@ -46,7 +44,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJnYWJldC50aGliYXV0QGdtYWlsLmNvbSIsImlhdCI6MTcwNDkyNjU3MCwiZXhwIjoxNzA1MDEyOTcwfQ.1V1HlxaejQ3TVkKMZjbsLvBgNVDwOi1nnz95jXnYrGI\"\r\n}",
+							"raw": "{\r\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MkB0ZXN0Mi5jb20iLCJpYXQiOjE3MDg2ODU3ODYsImV4cCI6MTcwODc3MjE4Nn0.opVjspJpuVyNcq0HD8vY7P_TwGV0qlSsmy9P_eNSKj0\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -54,15 +52,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/auth/refresh_token",
+							"raw": "http://localhost:3000/auth/refresh_token",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"api",
-								"v1",
 								"auth",
 								"refresh_token"
 							]
@@ -78,7 +74,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJnYWJldC50aGliYXV0QGdtYWlsLmNvbSIsImlhdCI6MTcwNDkyNTgwMn0.EuNi6CNsL5L6eAXw2bXuqpZ9XAG9gsd7mE42QFsAzCQ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MkB0ZXN0Mi5jb20iLCJpYXQiOjE3MDg2ODU3ODYsImV4cCI6MTcwODc3MjE4Nn0.opVjspJpuVyNcq0HD8vY7P_TwGV0qlSsmy9P_eNSKj0",
 									"type": "string"
 								}
 							]
@@ -86,15 +82,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/v1/auth",
+							"raw": "http://localhost:3000/auth",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"api",
-								"v1",
 								"auth"
 							]
 						}
@@ -113,7 +107,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"gabet.thibaut@gmail.com\",\r\n    \"password\": \"test\"\r\n}",
+							"raw": "{\r\n    \"email\": \"gabet.thibaut@gmail.com\",\r\n    \"password\": \"azerty\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -121,18 +115,154 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/users",
+							"raw": "http://localhost:3000/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"api",
-								"v1",
 								"users"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindAllUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MkB0ZXN0Mi5jb20iLCJpYXQiOjE3MDg2ODU3ODYsImV4cCI6MTcwODc3MjE4Nn0.opVjspJpuVyNcq0HD8vY7P_TwGV0qlSsmy9P_eNSKj0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "CreatePost",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"post1\",\r\n    \"content\": \"Je suis le Post 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/posts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindAllPosts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/posts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindOnePost",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/posts/1231e090-217f-4a25-9802-9940418177a5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"posts",
+								"1231e090-217f-4a25-9802-9940418177a5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdatePost",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"test\",\r\n    \"content\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/posts/5efc9d82-2c81-421f-88c3-5c0834e42d2a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"posts",
+								"5efc9d82-2c81-421f-88c3-5c0834e42d2a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePost",
+					"request": {
+						"method": "DELETE",
+						"header": []
 					},
 					"response": []
 				}

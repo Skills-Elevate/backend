@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -20,17 +20,37 @@ export class PostsService {
     return this.prisma.post.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.post.findUnique({
+  async findOne(id: string) {
+    const post = await this.prisma.post.findUnique({
       where: { id },
     });
+
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+    return post;
   }
 
-  update(id: string, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: string, updatePostDto: UpdatePostDto) {
+    const updatedPost = await this.prisma.post.update({
+      where: { id },
+      data: updatePostDto,
+    });
+
+    if (!updatedPost) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+    return "Post successfully updated";
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} post`;
+  async remove(id: string) {
+    const deletedPost = await this.prisma.post.delete({
+      where: { id },
+    });
+
+    if (!deletedPost) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+    return "Post successfully deleted";
   }
 }
