@@ -7,11 +7,12 @@ import { UpdatePostDto } from './dto/update-post.dto';
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
-  create(createPostDto: CreatePostDto) {
+  create(createPostDto: CreatePostDto, userId: string) {
     return this.prisma.post.create({
       data: {
         title: createPostDto.title,
         content: createPostDto.content,
+        authorId: userId
       }
     });
   }
@@ -31,9 +32,12 @@ export class PostsService {
     return post;
   }
 
-  async update(id: string, updatePostDto: UpdatePostDto) {
+  async update(id: string, updatePostDto: UpdatePostDto, userId: string) {
     const updatedPost = await this.prisma.post.update({
-      where: { id },
+      where: {
+        id,
+        authorId: userId,
+      },
       data: updatePostDto,
     });
 
@@ -43,9 +47,12 @@ export class PostsService {
     return "Post successfully updated";
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
     const deletedPost = await this.prisma.post.delete({
-      where: { id },
+      where: {
+        id,
+        authorId: userId,
+      },
     });
 
     if (!deletedPost) {

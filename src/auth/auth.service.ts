@@ -15,11 +15,13 @@ export class AuthService {
     const user = await this.validateUser(authLoginDto);
 
     const payload = {
-      userEmail: user.email,
+      userId: user.id,
+      userEmail: user.email
     };
 
     const refreshTokenPayload = {
-      userEmail: user.email,
+      userId: user.id,
+      userEmail: user.email
     };
 
     return {
@@ -36,7 +38,8 @@ export class AuthService {
       const user = await this.usersService.findOne(decodedRefreshToken.userEmail);
 
       const payload = {
-        userEmail: user.email,
+        userId: user.id,
+        userEmail: user.email
       };
 
       return this.jwtService.sign(payload, { expiresIn: '1d' });
