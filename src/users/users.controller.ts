@@ -20,7 +20,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Put()
-  async updateName(@Request() req, @Body() body) {
+  async update(@Request() req, @Body() body) {
     return this.usersService.updateName(body.email, body.newName);
   }
 
@@ -31,5 +31,4 @@ export class UsersController {
     const userId = token.user.userId;
     return this.usersService.findOne(userId);
   }
-
 }

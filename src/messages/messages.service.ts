@@ -1,26 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class MessagesService {
-  create(createMessageDto: CreateMessageDto) {
-    return 'This action adds a new message';
-  }
+  constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all messages`;
-  }
+  async create(createMessageDto: CreateMessageDto, userId: string) {
+    if (!createMessageDto.channelId) {
+      throw new BadRequestException('ChannelId is required');
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
-  }
+    const channel = await this.prisma.channel.findUnique({
+      where: { id: createMessageDto.channelId },
+    });
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
-  }
+    if (!channel) {
+      throw new NotFoundException(`Channel with id ${createMessageDto.channelId} not found`);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} message`;
+
+    const message = await this.prisma.message.create({
+      data: {
+        content: createMessageDto.content,
+        author: { connect: { id: userId } },
+        channel: { connect: { id: createMessageDto.channelId } },
+      },
+    });
+
+    if (!message) {
+      throw new NotFoundException(`Error creating message`);
+    }
+
+    return message;
   }
 }
