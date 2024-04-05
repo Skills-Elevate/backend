@@ -4,8 +4,10 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { CoursesModule } from './courses/courses.module';
+import { MessagesModule } from './messages/messages.module';
+import { ChannelsModule } from './channels/channels.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), PrismaModule, AuthModule, PostsModule, CoursesModule],
+  imports: [ConfigModule.forRoot(), PrismaModule, AuthModule, PostsModule, CoursesModule, MessagesModule, ChannelsModule],
 })
 export class AppModule {}

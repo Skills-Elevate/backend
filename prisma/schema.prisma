@@ -22,6 +22,8 @@ model User {
   updatedAt DateTime @updatedAt
   posts     Post[]
   review    Review[]
+  messages          Message[]
+  ChannelMembership ChannelMembership[]
 }
 
 model Post {
@@ -58,4 +60,32 @@ model Course {
   imageUrl    String
   author      String
   createdAt   DateTime @default(now())
+}
+
+model Channel {
+  id                String              @id @default(uuid())
+  name              String
+  messages          Message[]
+  createdAt         DateTime            @default(now())
+  ChannelMembership ChannelMembership[]
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now())
+  author     User     @relation(fields: [authorName], references: [id])
+  authorName String
+  channel    Channel  @relation(fields: [channelId], references: [id])
+  channelId  String
+}
+
+model ChannelMembership {
+  user              User    @relation(fields: [userId], references: [id])
+  userId            String
+  channel           Channel @relation(fields: [channelId], references: [id])
+  channelId         String
+  hasAcceptedAccess Boolean @default(false)
+
+  @@id([userId, channelId])
 }
