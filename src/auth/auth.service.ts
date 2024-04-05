@@ -52,10 +52,16 @@ export class AuthService {
   async validateUser(userLoginDto: UserLoginDto): Promise<User> {
     const { email, password } = userLoginDto;
 
-    const user = await this.usersService.findOne(email);
+    const user = await this.usersService.findByEmail(email); // Modification ici
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
     if (!(await this.usersService.validatePassword(password, user.password))) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid credentials');
     }
     return user;
   }
+
+
 }

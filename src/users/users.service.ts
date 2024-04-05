@@ -22,9 +22,9 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  async findOne(email: string) {
+  async findOne(id : string) {
     return this.prisma.user.findUnique({
-      where: { email },
+      where: { id },
     });
   }
 
@@ -35,4 +35,23 @@ export class UsersService {
   async validatePassword(password: string, userPassword: string): Promise<boolean> {
     return bcrypt.compare(password, userPassword);
   }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
+
+  async updateName(email: string, newName: string) {
+    if (!email) {
+      throw new Error('Email est undefined');
+    }
+    return this.prisma.user.update({
+      where: { email },
+      data: { name: newName },
+    });
+  }
+
+
 }
