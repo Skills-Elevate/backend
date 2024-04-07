@@ -1,17 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CoursesService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(name?: string) {
+  async findAll(queryParams: { name?: string; category?: string }) {
+    const { name, category } = queryParams;
+    if (!name && !category) {
+      return this.prisma.course.findMany();
+    }
     return this.prisma.course.findMany({
       where: {
-        name: name ? {
-          contains: name,
-        } : undefined,
+        OR: [
+          name ? { name: { contains: name } } : undefined,
+          category ? { category: { contains: category } } : undefined,
+        ].filter(condition => condition !== undefined),
       },
     });
   }
+
+
 }
