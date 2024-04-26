@@ -19,7 +19,6 @@ export class MessagesService {
       throw new NotFoundException(`Channel with id ${createMessageDto.channelId} not found`);
     }
 
-
     const message = await this.prisma.message.create({
       data: {
         content: createMessageDto.content,
