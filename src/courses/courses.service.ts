@@ -33,4 +33,12 @@ export class CoursesService {
     });
   }
 
+  async findOne(id: string) {
+    return this.prisma.course.findUnique({
+      where: {
+        id: id
+      }
+    });
+  }
+
 }
