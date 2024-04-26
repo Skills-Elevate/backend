@@ -267,6 +267,40 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Cours",
+			"item": [
+				{
+					"name": "AddCourse",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Nom du cours\",\n    \"description\": \"Description du cours\",\n    \"price\": 100,\n    \"imageUrl\": \"URL de l'image du cours\",\n    \"author\": \"Auteur du cours\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/courses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"courses"
+							]
+						}
+					},
+					"response": []
+				}
+
+			]
 		}
 	]
 }
