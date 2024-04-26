@@ -5,8 +5,15 @@ import { Server, Socket } from 'socket.io';
 export class MessagesGateway {
   @WebSocketServer() server: Server;
 
+  @SubscribeMessage('joinChannel')
+  handleJoinChannel(client: Socket, channelId: string): void {
+    client.join(channelId);
+  }
+
   @SubscribeMessage('newMessage')
   handleNewMessage(client: Socket, payload: any): void {
-    this.server.emit('newMessage', payload);
+    // Émettre le message uniquement aux clients du même canal
+    client.join(payload.channelId);
+    this.server.to(payload.channelId).emit('newMessage', payload);
   }
 }
