@@ -33,11 +33,38 @@ export class CoursesService {
     });
   }
 
-  async findOne(id: string) {
-    return this.prisma.course.findUnique({
+  async findOne(id: string, userId: string) {
+    // Récupérer le cours avec l'ID spécifié
+    const course = await this.prisma.course.findUnique({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
+
+    // Si le cours n'existe pas, renvoyer null
+    if (!course) {
+      return null;
+    }
+
+    // Récupérer les channels associés à ce cours
+    const channels = await this.prisma.channel.findMany({
+      where: {
+        courseId: id,
+        ChannelMembership: {
+          some: {
+            user: {
+              id: userId,
+            },
+            hasAcceptedAccess: true,
+          },
+        },
+      },
+    });
+
+    // Retourner le cours avec les channels accessibles
+    return {
+      ...course,
+      channels
+    };
   }
 }
