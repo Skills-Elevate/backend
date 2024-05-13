@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req, InternalServerErrorException } from '@nestjs/common';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -35,5 +35,18 @@ export class ChannelsController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.channelsService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('joinchannel/:channelId')
+  async joinChannel(@Param('channelId') channelId: string, @Req() req) {
+    const token = req.user;
+    const userId = token.user.userId;
+    try {
+      await this.channelsService.joinChannel(channelId, userId);
+      return { message: 'Channel and associated user successfully accepted' };
+    } catch (error) {
+      throw new InternalServerErrorException(`Error accepting access to channel with id ${channelId}`);
+    }
   }
 }

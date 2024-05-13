@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
@@ -8,11 +8,12 @@ export class ChannelsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createChannelsDto: CreateChannelDto, userId: string) {
-    const { name, courseId } = createChannelsDto;
+    const { courseId } = createChannelsDto;
 
     // Vérification de l'existence du cours avec courseId
     const course = await this.prisma.course.findUnique({
       where: { id: courseId },
+      select: { id: true, name: true, authorId: true },
     });
 
     // Si le cours n'existe pas, lancer une exception
@@ -20,18 +21,57 @@ export class ChannelsService {
       throw new NotFoundException(`Course with ID ${courseId} not found`);
     }
 
+    const { name: courseName, authorId: courseAuthorId } = course;
+
     // Utilisez une transaction pour garantir que le channel ne soit pas créé si la création du channelMembership échoue
     try {
-      await this.prisma.$transaction(async (transactionPrisma) => {
-        // Créez le channel
-        const createdChannel = await transactionPrisma.channel.create({
-          data: {
-            name,
+      const result = await this.prisma.$transaction(async (transactionPrisma) => {
+        // Vérifie si un channel existant avec le même courseId
+        const existingChannel = await transactionPrisma.channel.findFirst({
+          where: {
             courseId,
           },
         });
 
-        // Créez le channelMembership
+        if (existingChannel) {
+          // Vérifie si un channelMembership existe déjà pour ce channelId et userId
+          const existingMembership = await transactionPrisma.channelMembership.findFirst({
+            where: {
+              channelId: existingChannel.id,
+              userId,
+            },
+          });
+
+          // Si un channelMembership existe déjà, renvoyez un message indiquant qu'il existe déjà
+          if (existingMembership) {
+            return { message: 'ChannelMembership already exists for user and course' };
+          }
+
+          // Créez le channelMembership pour l'utilisateur initial
+          await transactionPrisma.channelMembership.create({
+            data: {
+              user: {
+                connect: { id: userId },
+              },
+              channel: {
+                connect: { id: existingChannel.id },
+              },
+              hasAcceptedAccess: true,
+            },
+          });
+
+          return { message: 'ChannelMembership successfully created' };
+        }
+
+        // Créez le channel
+        const createdChannel = await transactionPrisma.channel.create({
+          data: {
+            name: courseName,
+            courseId,
+          },
+        });
+
+        // Créez le channelMembership pour l'utilisateur initial
         await transactionPrisma.channelMembership.create({
           data: {
             user: {
@@ -44,9 +84,26 @@ export class ChannelsService {
           },
         });
 
-        // Si tout se passe bien, retournez le message de succès
-        return { message: 'Channel successfully created' };
+        // Vérifiez si l'utilisateur initial n'est pas l'auteur du cours
+        if (courseAuthorId !== userId) {
+          // Créez le channelMembership pour l'auteur du cours
+          await transactionPrisma.channelMembership.create({
+            data: {
+              user: {
+                connect: { id: courseAuthorId },
+              },
+              channel: {
+                connect: { id: createdChannel.id },
+              },
+              hasAcceptedAccess: true,
+            },
+          });
+        }
+
+        return { message: 'Channel and ChannelMembership successfully created' };
       });
+
+      return result;
     } catch (error) {
       // Si une exception est levée, une erreur s'est produite, renvoyez une erreur interne
       throw new InternalServerErrorException(`Error creating channel with users ${userId}`);
