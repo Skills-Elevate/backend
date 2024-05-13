@@ -26,6 +26,7 @@ model User {
   messages          Message[]
   courses           Course[]
   ChannelMembership ChannelMembership[]
+  userRoles         UserRole[]
 }
 
 model Post {
@@ -60,7 +61,7 @@ model Course {
   description String?
   price       Float
   imageUrl    String
-  author      User     @relation(fields: [authorId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id])
   authorId    String
   createdAt   DateTime  @default(now())
   channels    Channel[] // Ajoutez cette relation
@@ -77,13 +78,13 @@ model Channel {
 }
 
 model Message {
-  id         String   @id @default(uuid())
-  content    String
-  createdAt  DateTime @default(now())
-  author     User     @relation(fields: [authorId], references: [id])
-  authorId   String
-  channel    Channel  @relation(fields: [channelId], references: [id])
-  channelId  String
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  channel   Channel  @relation(fields: [channelId], references: [id])
+  channelId String
 }
 
 model ChannelMembership {
@@ -96,3 +97,20 @@ model ChannelMembership {
   @@id([userId, channelId])
 }
 
+model Role {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  userRoles   UserRole[]
+}
+
+model UserRole {
+  userId     String   @id
+  roleId     String
+  assignedAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  role       Role     @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId])
+}
