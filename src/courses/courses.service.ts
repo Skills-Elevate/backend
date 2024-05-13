@@ -21,14 +21,14 @@ export class CoursesService {
     });
   }
 
-  async create(createCourseDto: CreateCourseDto) {
+  async create(createCourseDto: CreateCourseDto, userId: string) {
     return this.prisma.course.create({
       data: {
         name : createCourseDto.name,
         description : createCourseDto.description,
         price : createCourseDto.price,
         imageUrl : createCourseDto.imageUrl,
-        author : createCourseDto.author
+        authorId : userId
       }
     });
   }
@@ -40,5 +40,4 @@ export class CoursesService {
       }
     });
   }
-
 }

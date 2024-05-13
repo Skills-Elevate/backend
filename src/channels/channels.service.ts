@@ -8,33 +8,52 @@ export class ChannelsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createChannelsDto: CreateChannelDto, userId: string) {
-    const { name } = createChannelsDto;
+    const { name, courseId } = createChannelsDto;
 
+    // Vérification de l'existence du cours avec courseId
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
+    });
+
+    // Si le cours n'existe pas, lancer une exception
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${courseId} not found`);
+    }
+
+    // Utilisez une transaction pour garantir que le channel ne soit pas créé si la création du channelMembership échoue
     try {
-      const createdChannel = await this.prisma.channel.create({
-        data: {
-          name,
-        },
-      });
+      await this.prisma.$transaction(async (transactionPrisma) => {
+        // Créez le channel
+        const createdChannel = await transactionPrisma.channel.create({
+          data: {
+            name,
+            courseId,
+          },
+        });
 
-      await this.prisma.channelMembership.create({
-        data: {
-          user: {
-            connect: { id: userId },
+        // Créez le channelMembership
+        await transactionPrisma.channelMembership.create({
+          data: {
+            user: {
+              connect: { id: userId },
+            },
+            channel: {
+              connect: { id: createdChannel.id },
+            },
+            hasAcceptedAccess: true,
           },
-          channel: {
-            connect: { id: createdChannel.id },
-          },
-          hasAcceptedAccess: true,
-        },
+        });
+
+        // Si tout se passe bien, retournez le message de succès
+        return { message: 'Channel successfully created' };
       });
     } catch (error) {
+      // Si une exception est levée, une erreur s'est produite, renvoyez une erreur interne
       throw new InternalServerErrorException(`Error creating channel with users ${userId}`);
     }
-    return { message: 'Channel successfully created' };
   }
 
-  async findAll(userId: string, acceptedAccess: boolean) {
+  async findAll(userId: string) {
     const findAllChannels = await this.prisma.channel.findMany({
       where: {
         ChannelMembership: {
@@ -42,7 +61,6 @@ export class ChannelsService {
             user: {
               id: userId,
             },
-            hasAcceptedAccess: acceptedAccess,
           },
         },
       },
@@ -93,7 +111,15 @@ export class ChannelsService {
             },
           },
         },
-        messages: true,
+        messages: {
+          include: {
+            author: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!findOneChannel) {

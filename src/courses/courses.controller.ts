@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
@@ -14,8 +14,10 @@ export class CoursesController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() createCourseDto: CreateCourseDto) {
-    return this.coursesService.create(createCourseDto);
+  create(@Body() createCourseDto: CreateCourseDto, @Req() req) {
+    const token = req.user;
+    const userId = token.user.userId;
+    return this.coursesService.create(createCourseDto, userId);
   }
 
   @Get(':id')

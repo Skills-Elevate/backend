@@ -5,5 +5,5 @@ export class CreateCourseDto {
   description: string;
   price: number;
   imageUrl: string;
-  author: string;
+  authorId: string;
 }

@@ -24,6 +24,7 @@ model User {
   posts             Post[]
   review            Review[]
   messages          Message[]
+  courses           Course[]
   ChannelMembership ChannelMembership[]
 }
 
@@ -54,13 +55,15 @@ model Category {
 }
 
 model Course {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String
   description String?
   price       Float
   imageUrl    String
-  author      String
-  createdAt   DateTime @default(now())
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  createdAt   DateTime  @default(now())
+  channels    Channel[] // Ajoutez cette relation
 }
 
 model Channel {
@@ -69,14 +72,16 @@ model Channel {
   messages          Message[]
   createdAt         DateTime            @default(now())
   ChannelMembership ChannelMembership[]
+  course            Course?             @relation(fields: [courseId], references: [id]) // Ajoutez cette relation
+  courseId          String?
 }
 
 model Message {
   id         String   @id @default(uuid())
   content    String
   createdAt  DateTime @default(now())
-  author     User     @relation(fields: [authorName], references: [id])
-  authorName String
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   String
   channel    Channel  @relation(fields: [channelId], references: [id])
   channelId  String
 }
@@ -90,3 +95,4 @@ model ChannelMembership {
 
   @@id([userId, channelId])
 }
+

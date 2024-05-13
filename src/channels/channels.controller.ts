@@ -17,10 +17,10 @@ export class ChannelsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Query('acceptedAccess') acceptedAccess: boolean, @Req() req) {
+  async findAll(@Req() req) {
     const token = req.user;
     const userId = token.user.userId;
-    return this.channelsService.findAll(userId, acceptedAccess);
+    return this.channelsService.findAll(userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -29,14 +29,6 @@ export class ChannelsController {
     const token = req.user;
     const userId = token.user.userId;
     return this.channelsService.findOne(id, userId);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Patch('joinchannel/:id')
-  async acceptedAccess(@Param('id') id: string, @Req() req) {
-    const token = req.user;
-    const userId = token.user.userId;
-    return this.channelsService.joinChannel(id, userId);
   }
 
   @UseGuards(JwtAuthGuard)
