@@ -34,19 +34,14 @@ export class CoursesService {
   }
 
   async findOne(id: string, userId: string) {
-    // Récupérer le cours avec l'ID spécifié
     const course = await this.prisma.course.findUnique({
       where: {
         id: id,
       },
     });
-
-    // Si le cours n'existe pas, renvoyer null
     if (!course) {
       return null;
     }
-
-    // Récupérer les channels associés à ce cours
     const channels = await this.prisma.channel.findMany({
       where: {
         courseId: id,
@@ -60,11 +55,44 @@ export class CoursesService {
         },
       },
     });
-
-    // Retourner le cours avec les channels accessibles
     return {
       ...course,
       channels
     };
   }
+
+  async findAllCoursesByCoach(userId: string) {
+    return this.prisma.course.findMany({
+      where: {
+        authorId: userId,
+      },
+    });
+  }
+
+  async update(courseId: string, updateCourseDto: CreateCourseDto, userId: string) {
+    const existingCourse = await this.prisma.course.findUnique({
+      where: { id: courseId },
+    });
+
+    if (!existingCourse) {
+      throw new Error('Course not found');
+    }
+
+    // Check if the userId matches the course's authorId
+    if (existingCourse.authorId !== userId) {
+      console.log(`User ${userId} not authorized to update course ${courseId}`);
+      throw new Error('You are not authorized to update this course');
+    }
+
+    return this.prisma.course.update({
+      where: { id: courseId },
+      data: {
+        name: updateCourseDto.name,
+        description: updateCourseDto.description,
+        price: updateCourseDto.price,
+        imageUrl: updateCourseDto.imageUrl,
+      },
+    });
+  }
+
 }

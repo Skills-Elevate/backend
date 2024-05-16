@@ -9,6 +9,7 @@ export class AuthController {
 
   @Post()
   async login(@Body() authLoginDto: UserLoginDto) {
+    console.log('AuthLoginDto:', authLoginDto);
     return this.authService.login(authLoginDto);
   }
 
