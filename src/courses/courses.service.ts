@@ -39,6 +39,7 @@ export class CoursesService {
         id: id,
       },
     });
+
     if (!course) {
       return null;
     }
@@ -94,5 +95,4 @@ export class CoursesService {
       },
     });
   }
-
 }
