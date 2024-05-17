@@ -34,39 +34,65 @@ export class CoursesService {
   }
 
   async findOne(id: string, userId: string) {
-    // Récupérer le cours avec l'ID spécifié
     const course = await this.prisma.course.findUnique({
       where: {
         id: id,
       },
     });
 
-    // // Si le cours n'existe pas, renvoyer null
-    // if (!course) {
-    //   return null;
-    // }
-    //
-    // // Récupérer le premier canal associé à ce cours et accessible à l'utilisateur
-    // const channel = await this.prisma.channel.findFirst({
-    //   where: {
-    //     courseId: id,
-    //     ChannelMembership: {
-    //       some: {
-    //         user: {
-    //           id: userId,
-    //         },
-    //         hasAcceptedAccess: true,
-    //       },
-    //     },
-    //   },
-    // });
+    if (!course) {
+      return null;
+    }
+    const channels = await this.prisma.channel.findMany({
+      where: {
+        courseId: id,
+        ChannelMembership: {
+          some: {
+            user: {
+              id: userId,
+            },
+            hasAcceptedAccess: true,
+          },
+        },
+      },
+    });
+    return {
+      ...course,
+      channels
+    };
+  }
 
-    // Retourner le cours avec le canal accessible, ou null si aucun canal n'est trouvé
-    // return {
-    //   ...course,
-    //   channel: channel || null
-    // };
+  async findAllCoursesByCoach(userId: string) {
+    return this.prisma.course.findMany({
+      where: {
+        authorId: userId,
+      },
+    });
+  }
 
-    return course
+  async update(courseId: string, updateCourseDto: CreateCourseDto, userId: string) {
+    const existingCourse = await this.prisma.course.findUnique({
+      where: { id: courseId },
+    });
+
+    if (!existingCourse) {
+      throw new Error('Course not found');
+    }
+
+    // Check if the userId matches the course's authorId
+    if (existingCourse.authorId !== userId) {
+      console.log(`User ${userId} not authorized to update course ${courseId}`);
+      throw new Error('You are not authorized to update this course');
+    }
+
+    return this.prisma.course.update({
+      where: { id: courseId },
+      data: {
+        name: updateCourseDto.name,
+        description: updateCourseDto.description,
+        price: updateCourseDto.price,
+        imageUrl: updateCourseDto.imageUrl,
+      },
+    });
   }
 }

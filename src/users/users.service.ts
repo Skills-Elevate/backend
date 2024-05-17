@@ -33,7 +33,17 @@ export class UsersService {
   }
 
   async validatePassword(password: string, userPassword: string): Promise<boolean> {
-    return bcrypt.compare(password, userPassword);
+    console.log('Password:', password);
+    console.log('User Password:', userPassword);
+
+    try {
+      const result = await bcrypt.compare(password, userPassword);
+      console.log('Compare Result:', result);
+      return result;
+    } catch (error) {
+      console.error('Error in bcrypt.compare:', error);
+      throw new Error('Error validating password');
+    }
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -41,7 +51,6 @@ export class UsersService {
       where: { email },
     });
   }
-
 
   async updateName(email: string, newName: string) {
     if (!email) {
@@ -52,6 +61,17 @@ export class UsersService {
       data: { name: newName },
     });
   }
-
-
+  async getUserRoles(userId: string): Promise<string[]> {
+    const userWithRoles = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
+    return userWithRoles.userRoles.map(userRole => userRole.role.name);
+  }
 }
