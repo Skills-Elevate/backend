@@ -43,6 +43,7 @@ export class CoursesService {
     if (!course) {
       return null;
     }
+
     const channels = await this.prisma.channel.findMany({
       where: {
         courseId: id,
@@ -56,9 +57,14 @@ export class CoursesService {
         },
       },
     });
+
+    // Extract the first channel from the channels array
+    const firstChannelId = channels.length > 0 ? channels[0].id : null;
+
     return {
       ...course,
-      channels
+      channels,
+      firstChannelId, // Add the first channel to the returned object
     };
   }
 
