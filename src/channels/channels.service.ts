@@ -26,48 +26,16 @@ export class ChannelsService {
     // Utilisez une transaction pour garantir que le channel ne soit pas créé si la création du channelMembership échoue
     try {
       const result = await this.prisma.$transaction(async (transactionPrisma) => {
-        // Vérifie si un channel existant avec le même courseId
-        const existingChannel = await transactionPrisma.channel.findFirst({
-          where: {
-            courseId,
-          },
-        });
-
-        if (existingChannel) {
-          // Vérifie si un channelMembership existe déjà pour ce channelId et userId
-          const existingMembership = await transactionPrisma.channelMembership.findFirst({
-            where: {
-              channelId: existingChannel.id,
-              userId,
-            },
-          });
-
-          // Si un channelMembership existe déjà, renvoyez un message indiquant qu'il existe déjà
-          if (existingMembership) {
-            return { message: 'ChannelMembership already exists for user and course' };
-          }
-
-          // Créez le channelMembership pour l'utilisateur initial
-          await transactionPrisma.channelMembership.create({
-            data: {
-              user: {
-                connect: { id: userId },
-              },
-              channel: {
-                connect: { id: existingChannel.id },
-              },
-              hasAcceptedAccess: true,
-            },
-          });
-
-          return { message: 'ChannelMembership successfully created' };
-        }
-
         // Créez le channel
         const createdChannel = await transactionPrisma.channel.create({
           data: {
             name: courseName,
             courseId,
+          },
+          select: {
+            id: true,
+            name: true,
+            courseId: true,
           },
         });
 
@@ -100,7 +68,7 @@ export class ChannelsService {
           });
         }
 
-        return { message: 'Channel and ChannelMembership successfully created' };
+        return createdChannel;
       });
 
       return result;
