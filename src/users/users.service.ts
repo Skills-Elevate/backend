@@ -74,4 +74,20 @@ export class UsersService {
     });
     return userWithRoles.userRoles.map(userRole => userRole.role.name);
   }
+
+  async isUserCoach(userId: string): Promise<boolean> {
+    const userRoles = await this.prisma.userRole.findMany({
+      where : {
+        userId : userId,
+        role : {
+          name : 'Coach'
+        }
+      },
+      select : {
+        role : true
+      }
+    });
+    return userRoles.length > 0;
+  }
+
 }

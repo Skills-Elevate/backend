@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Put, Request } from "@nestjs/common";
+import { Controller, Post, Body, Get, UseGuards, Put, Request, Req } from "@nestjs/common";
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
@@ -30,5 +30,13 @@ export class UsersController {
     const token = req.user;
     const userId = token.user.userId;
     return this.usersService.findOne(userId);
+  }
+
+  @Get('is-coach')
+  @UseGuards(JwtAuthGuard)
+  async isCoach(@Req() req): Promise<boolean> {
+    const token = req.user;
+    const userId = token.user.userId;
+    return this.usersService.isUserCoach(userId);
   }
 }
