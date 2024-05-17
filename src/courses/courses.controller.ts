@@ -25,7 +25,6 @@ export class CoursesController {
   findAllMyCourses(@Req() req) {
     const token = req.user;
     const userId = token.user.userId;
-    console.log(userId);
     return this.coursesService.findAllCoursesByCoach(userId);
   }
 
