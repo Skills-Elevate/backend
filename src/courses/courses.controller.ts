@@ -20,21 +20,21 @@ export class CoursesController {
     return this.coursesService.create(createCourseDto, userId);
   }
 
+  @Get('my_courses')
+  @UseGuards(JwtAuthGuard)
+  findAllMyCourses(@Req() req) {
+    const token = req.user;
+    const userId = token.user.userId;
+    console.log(userId);
+    return this.coursesService.findAllCoursesByCoach(userId);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string,  @Req() req) {
     const token = req.user;
     const userId = token.user.userId;
     return this.coursesService.findOne(id, userId);
-  }
-
-  @Get('my_courses')
-  @UseGuards(JwtAuthGuard)
-  findAllMyCourses(@Req() req) {
-    console.log('Decoded JWT:', req.user);
-    const userId = req.user.userId;
-    console.log('User ID:', userId);
-    return this.coursesService.findAllCoursesByCoach(userId);
   }
 
   @Get('test')
