@@ -41,30 +41,32 @@ export class CoursesService {
       },
     });
 
-    // Si le cours n'existe pas, renvoyer null
-    if (!course) {
-      return null;
-    }
+    // // Si le cours n'existe pas, renvoyer null
+    // if (!course) {
+    //   return null;
+    // }
+    //
+    // // Récupérer le premier canal associé à ce cours et accessible à l'utilisateur
+    // const channel = await this.prisma.channel.findFirst({
+    //   where: {
+    //     courseId: id,
+    //     ChannelMembership: {
+    //       some: {
+    //         user: {
+    //           id: userId,
+    //         },
+    //         hasAcceptedAccess: true,
+    //       },
+    //     },
+    //   },
+    // });
 
-    // Récupérer les channels associés à ce cours
-    const channels = await this.prisma.channel.findMany({
-      where: {
-        courseId: id,
-        ChannelMembership: {
-          some: {
-            user: {
-              id: userId,
-            },
-            hasAcceptedAccess: true,
-          },
-        },
-      },
-    });
+    // Retourner le cours avec le canal accessible, ou null si aucun canal n'est trouvé
+    // return {
+    //   ...course,
+    //   channel: channel || null
+    // };
 
-    // Retourner le cours avec les channels accessibles
-    return {
-      ...course,
-      channels
-    };
+    return course
   }
 }

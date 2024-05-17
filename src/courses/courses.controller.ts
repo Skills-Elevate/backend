@@ -22,7 +22,7 @@ export class CoursesController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  findOne(@Param('id') id: string,  @Req() req) {
+  findOne(@Param('id') id: string, @Req() req) {
     const token = req.user;
     const userId = token.user.userId;
     return this.coursesService.findOne(id, userId);
