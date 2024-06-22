@@ -49,4 +49,22 @@ export class AuthService {
     }
     return user;
   }
+
+  async refreshAccessToken(refreshToken: string) {
+    try {
+      const decodedRefreshToken = this.jwtService.verify(refreshToken);
+      const user = await this.usersService.findOne(decodedRefreshToken.userEmail);
+
+      const payload = {
+        userId: user.id,
+        userEmail: user.email
+      };
+
+      return this.jwtService.sign(payload, { expiresIn: '1d' });
+    } catch (error) {
+      console.error('JWT Verification Error during refreshAccessToken:', error);
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
 }

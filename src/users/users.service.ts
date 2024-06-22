@@ -28,6 +28,10 @@ export class UsersService {
     });
   }
 
+  async getUserCount(): Promise<number> {
+    return this.prisma.user.count();
+  }
+
   async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 8);
   }

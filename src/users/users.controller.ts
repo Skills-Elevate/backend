@@ -21,6 +21,12 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('count')
+  async getUserCount() {
+    return this.usersService.getUserCount();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Put()
   async update(@Request() req, @Body() body) {
     return this.usersService.updateName(body.email, body.newName);

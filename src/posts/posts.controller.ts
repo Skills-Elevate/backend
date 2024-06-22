@@ -21,6 +21,12 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
+  @Get('count')
+  @UseGuards(JwtAuthGuard)
+  getCount() {
+    return this.postsService.getCount();
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
