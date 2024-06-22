@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UserLoginDto } from './dto/user-login.dto';
-import { UsersService } from "../users/users.service";
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -15,16 +15,18 @@ export class AuthService {
     const user = await this.validateUser(authLoginDto);
     const roles = await this.usersService.getUserRoles(user.id);
 
+    console.log(`Roles for user ${user.email}: ${roles}`);
+
     const payload = {
       userId: user.id,
       userEmail: user.email,
-      roles: roles
+      roles: roles,
     };
 
     const refreshTokenPayload = {
       userId: user.id,
       userEmail: user.email,
-      roles : roles
+      roles: roles,
     };
 
     return {
@@ -33,23 +35,6 @@ export class AuthService {
         expiresIn: '7d',
       }),
     };
-  }
-
-  async refreshAccessToken(refreshToken: string) {
-    try {
-      const decodedRefreshToken = this.jwtService.verify(refreshToken);
-      const user = await this.usersService.findOne(decodedRefreshToken.userEmail);
-
-      const payload = {
-        userId: user.id,
-        userEmail: user.email
-      };
-
-      return this.jwtService.sign(payload, { expiresIn: '1d' });
-    } catch (error) {
-      console.error('JWT Verification Error during refreshAccessToken:', error);
-      throw new UnauthorizedException('Invalid refresh token');
-    }
   }
 
   async validateUser(userLoginDto: UserLoginDto): Promise<User> {

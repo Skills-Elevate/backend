@@ -36,12 +36,6 @@ export class CoursesController {
     return this.coursesService.findOne(id, userId);
   }
 
-  @Get('test')
-  testRoute() {
-    console.log('Test route accessed');
-    return { message: 'Test route works!' };
-  }
-
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateCourseDto: CreateCourseDto, @Req() req) {

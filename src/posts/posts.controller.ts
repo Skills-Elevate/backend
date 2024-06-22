@@ -17,7 +17,6 @@ export class PostsController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.postsService.findAll();
   }
