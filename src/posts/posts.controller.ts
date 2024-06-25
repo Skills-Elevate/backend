@@ -24,8 +24,15 @@ export class PostsController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Retrieve all posts' })
+
   findAll() {
     return this.postsService.findAll();
+  }
+
+  @Get('count')
+  @UseGuards(JwtAuthGuard)
+  getCount() {
+    return this.postsService.getCount();
   }
 
   @Get(':id')

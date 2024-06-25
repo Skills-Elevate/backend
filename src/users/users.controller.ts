@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { ApiTags, ApiBody, ApiResponse } from "@nestjs/swagger";
 
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -21,6 +21,12 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Retrieve all users' })
   async findAll() {
     return this.usersService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('count')
+  async getUserCount() {
+    return this.usersService.getUserCount();
   }
 
   @UseGuards(JwtAuthGuard)

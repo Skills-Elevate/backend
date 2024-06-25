@@ -21,6 +21,10 @@ export class CoursesService {
     });
   }
 
+  async getCount(): Promise<number> {
+    return this.prisma.course.count();
+  }
+
   async create(createCourseDto: CreateCourseDto, userId: string) {
     return this.prisma.course.create({
       data: {

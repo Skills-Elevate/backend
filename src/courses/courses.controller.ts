@@ -15,6 +15,12 @@ export class CoursesController {
     return this.coursesService.findAll({ name, category });
   }
 
+  @Get('count')
+  @UseGuards(JwtAuthGuard)
+  getCount() {
+    return this.coursesService.getCount();
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: CreateCourseDto })
