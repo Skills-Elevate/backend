@@ -2,17 +2,22 @@ import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req, InternalSer
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiTags, ApiBody, ApiResponse } from "@nestjs/swagger";
 
+@ApiTags('channels')
 @Controller('channels')
 export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() CreateChannelsDto: CreateChannelDto, @Req() req) {
+  @ApiBody({ type: CreateChannelDto })
+  @ApiResponse({ status: 201, description: 'The channel has been successfully created.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  async create(@Body() createChannelDto: CreateChannelDto, @Req() req) {
     const token = req.user;
     const userId = token.user.userId;
-    return this.channelsService.create(CreateChannelsDto, userId);
+    return this.channelsService.create(createChannelDto, userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -39,6 +44,8 @@ export class ChannelsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('joinchannel/:channelId')
+  @ApiResponse({ status: 200, description: 'Channel and associated user successfully accepted' })
+  @ApiResponse({ status: 500, description: 'Error accepting access to channel' })
   async joinChannel(@Param('channelId') channelId: string, @Req() req) {
     const token = req.user;
     const userId = token.user.userId;

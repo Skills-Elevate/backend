@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "seed" : "npx ts-node prisma/seed.ts",
+    "seed": "npx ts-node prisma/seed.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -31,6 +31,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.0",
     "@nestjs/platform-socket.io": "^10.3.7",
+    "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.1",
     "@nestjs/websockets": "^10.3.7",
     "@prisma/client": "^5.12.1",
