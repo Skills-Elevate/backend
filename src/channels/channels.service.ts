@@ -83,9 +83,7 @@ export class ChannelsService {
       where: {
         ChannelMembership: {
           some: {
-            user: {
-              id: userId,
-            },
+            userId: userId, // corrected field
           },
         },
       },
@@ -109,7 +107,17 @@ export class ChannelsService {
     if (!findAllChannels || findAllChannels.length === 0) {
       throw new NotFoundException(`Channels not found`);
     }
-    return findAllChannels;
+
+    return findAllChannels.map(channel => {
+      // Finding the membership of the other user
+      const otherUserMembership = channel.ChannelMembership.find(membership => membership.userId !== userId);
+      const otherUserName = otherUserMembership ? otherUserMembership.user.name : null;
+
+      return {
+        ...channel,
+        studentName: otherUserName,
+      };
+    });
   }
 
   async findOne(id: string, userId: string) {
