@@ -22,10 +22,14 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  async findOne(id : string) {
+  async findOne(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
     });
+  }
+
+  async getUserCount(): Promise<number> {
+    return this.prisma.user.count();
   }
 
   async hashPassword(password: string): Promise<string> {
@@ -61,6 +65,7 @@ export class UsersService {
       data: { name: newName },
     });
   }
+
   async getUserRoles(userId: string): Promise<string[]> {
     const userWithRoles = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -72,22 +77,26 @@ export class UsersService {
         },
       },
     });
+
+    if (!userWithRoles) {
+      return [];
+    }
+
     return userWithRoles.userRoles.map(userRole => userRole.role.name);
   }
 
   async isUserCoach(userId: string): Promise<boolean> {
     const userRoles = await this.prisma.userRole.findMany({
-      where : {
-        userId : userId,
-        role : {
-          name : 'Coach'
-        }
+      where: {
+        userId: userId,
+        role: {
+          name: 'Coach',
+        },
       },
-      select : {
-        role : true
-      }
+      select: {
+        role: true,
+      },
     });
     return userRoles.length > 0;
   }
-
 }

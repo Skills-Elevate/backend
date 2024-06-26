@@ -17,6 +17,10 @@ export class PostsService {
     });
   }
 
+  async getCount(): Promise<number> {
+    return this.prisma.post.count();
+  }
+
   findAll() {
     return this.prisma.post.findMany();
   }
